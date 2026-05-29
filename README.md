@@ -1,10 +1,10 @@
-# 🧠 Intelligent Pod Scheduling with Distributed Federated Learning
+# Intelligent Pod Scheduling with Distributed Federated Learning
 
 > A Kubernetes-native Intelligent Scheduler that uses **Distributed Federated Learning (FL)** driven by **Reinforcement Learning (Q-Learning)** to adaptively place pods across cluster nodes. Each worker node runs its own **FL Agent** that continuously learns from local resource pressure. The central scheduler aggregates these local models via **Federated Averaging (FedAvg)** to produce a globally optimized scheduling policy.
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 1. [Project Overview](#project-overview)
 2. [Architecture](#architecture)
@@ -195,7 +195,7 @@ OBSERVE → COLLECT FL AGENTS → FedAvg → REASON → DECIDE → ACT → RCA
 ## Project Structure
 
 ```
-Course Project/
+.
 ├── custom-scheduler/
 │   ├── scheduler.py           # Central FL Scheduler + FedAvg Coordinator
 │   ├── fl_agent.py            # Distributed Q-Learning Agent (runs per node)
@@ -361,7 +361,7 @@ python3 dashboard.py
 | **Row 1** | Side-by-side Total CPU/Mem and **Avg CPU/Node (%)** per namespace |
 | **Row 2** | Side-by-side Pod Density distribution charts |
 | **Row 3** | Default: "N/A" (static) vs Intelligent: Live FL Global Weights radar chart |
-| **Row 4** | 🛰️ **Distributed FL Agents** — Live cards for each worker node showing: local weights, node metrics, RL State, RL Reward, Health Status, and Uptime |
+| **Row 4** | **Distributed FL Agents** — Live cards for each worker node showing: local weights, node metrics, RL State, RL Reward, Health Status, and Uptime |
 
 ---
 

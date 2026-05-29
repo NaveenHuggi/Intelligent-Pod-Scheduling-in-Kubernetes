@@ -1,0 +1,12 @@
+kubectl
+*.pdf
+default_results.txt
+intelligent_results.txt
+benchmark/results-*.txt
+logs/
+RCA/
+metrics/
+__pycache__/
+*.pyc
+.env
+.DS_Store
