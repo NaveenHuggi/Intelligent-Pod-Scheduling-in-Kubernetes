@@ -1,0 +1,35 @@
+
+
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║        SCHEDULER BENCHMARK RESULTS — 2026-05-28 12:54:32                        ║
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  Test pods per scheduler : 20
+║  Namespaces              : default-workloads / intelligent-workloads
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  METRIC                  DEFAULT         INTELLIGENT
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  Total schedule time (s) : 2              10
+║  Avg latency per pod (s) : 0.000              10.750
+║  Load balance (std dev)  : 0.0000  (mean=5.0, nodes=4)
+║                          : vs 1.0000  (mean=5.0, nodes=4)
+║  Control-Plane Placements: 0
+0               0
+0  <-- Should be 0 for Intelligent!
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  POD DISTRIBUTION — DEFAULT SCHEDULER
+║    5 pods → scheduler-demo-worker4
+║    5 pods → scheduler-demo-worker3
+║    5 pods → scheduler-demo-worker2
+║    5 pods → scheduler-demo-worker
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  POD DISTRIBUTION — INTELLIGENT SCHEDULER
+║    6 pods → scheduler-demo-worker4
+║    6 pods → scheduler-demo-worker2
+║    4 pods → scheduler-demo-worker3
+║    4 pods → scheduler-demo-worker
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  PHASE 5: IMPROVEMENT ANALYSIS
+║
+║  Sample Groq LLM RCA for pod 'test-app-intelligent-7cfbc78599-42clw':
+║  "[FL-RCA] Pod 'test-app-intelligent-7cfbc78599-42clw' → Node 'scheduler-demo-worker4' (score: 0.8048). Global FL Model (FedAvg of distributed agents): w_cpu=0.41, w_mem=0.26, w_pods=0.17, w_hist=0.16. All worker nodes metrics are: scheduler-demo-worker4 (Score: 0.8048, CPU: 5.2%, Mem: 7.8%, Pods: 5) | scheduler-demo-worker2 (Score: 0.7943, CPU: 5.0%, Mem: 6.0%, Pods: 5) | scheduler-demo-worker (Score: 0.7935, CPU: 5.9%, Mem: 7.9%, Pods: 6) | scheduler-demo-worker3 (Score: 0.7887, CPU: 5.8%, Mem: 9.8%, Pods: 6). The best one is 'scheduler-demo-worker4', so the pod was deployed here. Dominant factor for this node: 'CPU Headroom'. Local Agent on 'scheduler-demo-worker4' contributed weights: w_cpu=0.41, w_mem=0.26. This distributed FL approach adapts per-node, unlike the static default scheduler."
+╚══════════════════════════════════════════════════════════════════════════════════╝

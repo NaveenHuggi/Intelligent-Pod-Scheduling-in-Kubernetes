@@ -1,0 +1,2 @@
+Scheduler Model | Trial | Slave 1 | Slave 2 | Slave 3 | Slave 4 | Avg CPU Util
+Intelligent     | 1     | 2      | 2      | 3      | 3      | 4.50%

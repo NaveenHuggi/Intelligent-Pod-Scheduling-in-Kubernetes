@@ -1,0 +1,491 @@
+{
+  "title": "Intelligent Pod Scheduler - Comparison Dashboard",
+  "uid": "intelligent-scheduler-v1",
+  "schemaVersion": 36,
+  "version": 1,
+  "refresh": "10s",
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "tags": [
+    "kubernetes",
+    "scheduler",
+    "intelligent"
+  ],
+  "panels": [
+    {
+      "id": 1,
+      "title": "\ud83e\udd16 Intelligent Scheduler \u2014 Pod Placements per Node",
+      "type": "bargauge",
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "intelligent_scheduler_decisions_total",
+          "legendFormat": "{{node}}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "displayMode": "gradient"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 5
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 2,
+      "title": "\u2699\ufe0f Default Scheduler \u2014 Pod Distribution per Node",
+      "type": "bargauge",
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum by (node) (kube_pod_info{pod=~'test-app-default.*'})",
+          "legendFormat": "{{node}}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "displayMode": "gradient"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          }
+        }
+      }
+    },
+    {
+      "id": 3,
+      "title": "\u23f1\ufe0f Scheduling Latency \u2014 Intelligent Scheduler (p50 / p95 / p99)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 6
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.50, rate(intelligent_scheduler_latency_seconds_bucket[2m]))",
+          "legendFormat": "p50",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.95, rate(intelligent_scheduler_latency_seconds_bucket[2m]))",
+          "legendFormat": "p95",
+          "refId": "B"
+        },
+        {
+          "expr": "histogram_quantile(0.99, rate(intelligent_scheduler_latency_seconds_bucket[2m]))",
+          "legendFormat": "p99",
+          "refId": "C"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10
+          }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "title": "\ud83d\udcca Node CPU Usage \u2014 All Nodes (Real-time)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 6
+      },
+      "targets": [
+        {
+          "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode='idle'}[1m])) * 100)",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 15
+          }
+        }
+      }
+    },
+    {
+      "id": 5,
+      "title": "\ud83e\udde0 Adaptive AI Weights (Live)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 13
+      },
+      "targets": [
+        {
+          "expr": "intelligent_scheduler_weight_cpu",
+          "legendFormat": "w_cpu",
+          "refId": "A"
+        },
+        {
+          "expr": "intelligent_scheduler_weight_mem",
+          "legendFormat": "w_mem",
+          "refId": "B"
+        },
+        {
+          "expr": "intelligent_scheduler_weight_pods",
+          "legendFormat": "w_pods",
+          "refId": "C"
+        },
+        {
+          "expr": "intelligent_scheduler_weight_hist",
+          "legendFormat": "w_history",
+          "refId": "D"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1,
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10
+          }
+        }
+      }
+    },
+    {
+      "id": 6,
+      "title": "\ud83d\udcc8 Node Score per Node (Intelligent Scheduler)",
+      "type": "gauge",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 13
+      },
+      "targets": [
+        {
+          "expr": "intelligent_scheduler_node_score",
+          "legendFormat": "{{node}}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "showThresholdLabels": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "min": 0,
+          "max": 1,
+          "thresholds": {
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.4
+              },
+              {
+                "color": "green",
+                "value": 0.7
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 7,
+      "title": "\ud83d\udd04 Reasoning Events Rate (decisions/min)",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 20
+      },
+      "targets": [
+        {
+          "expr": "rate(intelligent_scheduler_reasoning_events_total[1m]) * 60",
+          "legendFormat": "reasoning/min",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 8,
+      "title": "\u274c Scheduling Errors",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 20
+      },
+      "targets": [
+        {
+          "expr": "sum(intelligent_scheduler_errors_total)",
+          "legendFormat": "errors",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 9,
+      "title": "\ud83d\udcbe Node Memory Usage \u2014 All Nodes",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 20
+      },
+      "targets": [
+        {
+          "expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 15
+          }
+        }
+      }
+    },
+    {
+      "id": 10,
+      "title": "\ud83c\udfc6 Load Balance Score (lower std-dev = better balance)",
+      "description": "Standard deviation of pod counts across nodes. Intelligent scheduler should show lower values.",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 27
+      },
+      "targets": [
+        {
+          "expr": "stddev(sum by (node) (kube_pod_info{pod=~'test-app-intelligent.*'}))",
+          "legendFormat": "Intelligent Scheduler Std Dev",
+          "refId": "A"
+        },
+        {
+          "expr": "stddev(sum by (node) (kube_pod_info{pod=~'test-app-default.*'}))",
+          "legendFormat": "Default Scheduler Std Dev",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "lineWidth": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 11,
+      "title": "\ud83d\udce6 Total Pods Scheduled per Scheduler",
+      "type": "stat",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 27
+      },
+      "targets": [
+        {
+          "expr": "sum(intelligent_scheduler_decisions_total)",
+          "legendFormat": "Intelligent Scheduler",
+          "refId": "A"
+        },
+        {
+          "expr": "count(kube_pod_info{pod=~'test-app-default.*', node!=''})",
+          "legendFormat": "Default Scheduler",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "orientation": "auto",
+        "textMode": "value_and_name"
+      }
+    },
+    {
+      "id": 100,
+      "title": "\ud83e\udd16 LLM RCA Invocations",
+      "type": "stat",
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 34
+      },
+      "targets": [
+        {
+          "expr": "sum by (status) (intelligent_scheduler_llm_invocations_total)",
+          "legendFormat": "{{status}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      }
+    },
+    {
+      "id": 101,
+      "title": "\u23f1\ufe0f LLM Response Latency (p95 / p99)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 5,
+        "w": 18,
+        "x": 6,
+        "y": 34
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, rate(intelligent_scheduler_llm_latency_seconds_bucket[5m]))",
+          "legendFormat": "p95",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.99, rate(intelligent_scheduler_llm_latency_seconds_bucket[5m]))",
+          "legendFormat": "p99",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": {
+            "lineWidth": 2
+          }
+        }
+      }
+    }
+  ]
+}

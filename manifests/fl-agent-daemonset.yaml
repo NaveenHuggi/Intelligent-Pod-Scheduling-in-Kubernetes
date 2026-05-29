@@ -1,0 +1,92 @@
+---
+# ServiceAccount for FL agents
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: fl-agent
+  namespace: scheduler-system
+
+---
+# ClusterRole: read-only access to nodes and metrics
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: fl-agent-role
+rules:
+  - apiGroups: [""]
+    resources: ["nodes", "pods"]
+    verbs: ["get", "list"]
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["nodes", "pods"]
+    verbs: ["get", "list"]
+
+---
+# Bind ClusterRole to ServiceAccount
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: fl-agent-binding
+subjects:
+  - kind: ServiceAccount
+    name: fl-agent
+    namespace: scheduler-system
+roleRef:
+  kind: ClusterRole
+  name: fl-agent-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# DaemonSet: one FL Agent per worker node
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fl-agent
+  namespace: scheduler-system
+  labels:
+    app: fl-agent
+spec:
+  selector:
+    matchLabels:
+      app: fl-agent
+  template:
+    metadata:
+      labels:
+        app: fl-agent
+    spec:
+      serviceAccountName: fl-agent
+      nodeSelector:
+        node-role: worker
+      tolerations: []
+      containers:
+        - name: fl-agent
+          image: fl-agent:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5050
+              name: http
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: AGENT_PORT
+              value: "5050"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 5050
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 5050
+            initialDelaySeconds: 5
+            periodSeconds: 10

@@ -1,0 +1,53 @@
+
+
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║        SCHEDULER BENCHMARK RESULTS — 2026-05-28 19:34:55                        ║
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  Test pods per scheduler : 20
+║  Namespaces              : default-workloads / intelligent-workloads
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  METRIC                  DEFAULT         INTELLIGENT
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  Total schedule time (s) : 2              14
+║  Avg latency per pod (s) : 0.250              14.158
+║  Load balance (std dev)  : 0.0000  (mean=5.0, nodes=4)
+║                          : vs 0.0000  (mean=5.0, nodes=4)
+║  Control-Plane Placements: 0
+0               0
+0  <-- Should be 0 for Intelligent!
+╠══════════════════════════════════════════════════════════════════════════════════╣
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  POD DISTRIBUTION — DEFAULT SCHEDULER
+║    5 pods → scheduler-demo-worker4
+║    5 pods → scheduler-demo-worker3
+║    5 pods → scheduler-demo-worker2
+║    5 pods → scheduler-demo-worker
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  POD DISTRIBUTION — INTELLIGENT SCHEDULER
+║    5 pods → scheduler-demo-worker4
+║    5 pods → scheduler-demo-worker3
+║    5 pods → scheduler-demo-worker2
+║    5 pods → scheduler-demo-worker
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  PHASE 5: IMPROVEMENT ANALYSIS
+║
+║  Sample Groq LLM RCA for pod 'test-app-intelligent-7cfbc78599-6v4g7':
+║  "[FL-RCA] Decision for Pod 'test-app-intelligent-7cfbc78599-6v4g7'
+Selected Node: 'scheduler-demo-worker2' (Score: 0.5844)
+Dominant Factor: 'CPU Headroom'
+
+--- Global FL Model (FedAvg) ---
+  • w_cpu:  0.25
+  • w_mem:  0.19
+  • w_pods: 0.23
+  • w_hist: 0.33
+
+--- Worker Node Candidates ---
+  - scheduler-demo-worker2: Score=0.5844 | CPU=21.3% | Mem=7.5% | Pods=15
+  - scheduler-demo-worker3: Score=0.5792 | CPU=15.1% | Mem=8.7% | Pods=14
+  - scheduler-demo-worker: Score=0.5740 | CPU=12.6% | Mem=7.1% | Pods=15
+  - scheduler-demo-worker4: Score=0.5659 | CPU=15.7% | Mem=7.3% | Pods=15
+
+--- Local Agent Insight ---
+The FL agent on 'scheduler-demo-worker2' contributed local weights (w_cpu=0.18, w_mem=0.25) which influenced this decision. This distributed approach adapts dynamically per-node."
+╚══════════════════════════════════════════════════════════════════════════════════╝

@@ -1,0 +1,55 @@
+---
+# Test workload using the DEFAULT Kubernetes scheduler
+# Deploy 10 replicas to observe default scheduling distribution
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-app-default
+  namespace: default-workloads
+  labels:
+    app: test-app-default
+    scheduler-type: default
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: test-app-default
+  template:
+    metadata:
+      labels:
+        app: test-app-default
+        scheduler-type: default
+    spec:
+      # No schedulerName → uses default kube-scheduler
+      containers:
+        - name: app
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 5
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-app-default-svc
+  namespace: default-workloads
+spec:
+  selector:
+    app: test-app-default
+  ports:
+    - port: 80
+      targetPort: 80
+  type: ClusterIP

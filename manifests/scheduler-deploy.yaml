@@ -1,0 +1,71 @@
+---
+# Deployment for the Intelligent Scheduler inside the cluster
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: intelligent-scheduler
+  namespace: scheduler-system
+  labels:
+    app: intelligent-scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: intelligent-scheduler
+  template:
+    metadata:
+      labels:
+        app: intelligent-scheduler
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: intelligent-scheduler
+      containers:
+        - name: scheduler
+          image: intelligent-scheduler:latest
+          imagePullPolicy: Never          # using local kind-loaded image
+          ports:
+            - containerPort: 8080
+              name: metrics
+          env:
+            - name: PROMETHEUS_URL
+              value: "http://prometheus-server.monitoring.svc:9090"
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+---
+# Service to expose /metrics to Prometheus
+apiVersion: v1
+kind: Service
+metadata:
+  name: intelligent-scheduler
+  namespace: scheduler-system
+  labels:
+    app: intelligent-scheduler
+spec:
+  selector:
+    app: intelligent-scheduler
+  ports:
+    - name: metrics
+      port: 8080
+      targetPort: 8080

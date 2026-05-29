@@ -1,0 +1,31 @@
+
+
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║        SCHEDULER BENCHMARK RESULTS — 2026-05-24 19:36:30                        ║
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  Test pods per scheduler : 20
+║  Namespaces              : default-workloads / intelligent-workloads
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  METRIC                  DEFAULT         INTELLIGENT
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  Total schedule time (s) : 2              109
+║  Avg latency per pod (s) : 0.350              58.400
+║  Load balance (std dev)  : 0.0000  (mean=10.0, nodes=2)
+║                          : vs 3.0000  (mean=10.0, nodes=2)
+║  Control-Plane Placements: 0
+0               0
+0  <-- Should be 0 for Intelligent!
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  POD DISTRIBUTION — DEFAULT SCHEDULER
+║    10 pods → scheduler-demo-worker2
+║    10 pods → scheduler-demo-worker
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  POD DISTRIBUTION — INTELLIGENT SCHEDULER
+║    13 pods → scheduler-demo-worker2
+║    7 pods → scheduler-demo-worker
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  PHASE 5: IMPROVEMENT ANALYSIS
+║
+║  Sample Groq LLM RCA for pod 'test-app-intelligent-664c964d97-4bz2l':
+║  "None (RCA disabled or not yet generated)"
+╚══════════════════════════════════════════════════════════════════════════════════╝

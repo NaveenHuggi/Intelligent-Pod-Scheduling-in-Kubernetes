@@ -1,0 +1,23 @@
+Pod:    test-app-intelligent-7cfbc78599-g874d
+Node:   scheduler-demo-worker3
+Source: federated-learning-annotation
+============================================================
+
+[FL-RCA] Decision for Pod 'test-app-intelligent-7cfbc78599-g874d'
+Selected Node: 'scheduler-demo-worker3' (Score: 0.6183)
+Dominant Factor: 'CPU Headroom'
+
+--- Global FL Model (FedAvg) ---
+  • w_cpu:  0.25
+  • w_mem:  0.17
+  • w_pods: 0.24
+  • w_hist: 0.33
+
+--- Worker Node Candidates ---
+  - scheduler-demo-worker3: Score=0.6183 | CPU=15.1% | Mem=8.7% | Pods=13
+  - scheduler-demo-worker: Score=0.5971 | CPU=12.6% | Mem=7.1% | Pods=15
+  - scheduler-demo-worker2: Score=0.5893 | CPU=21.3% | Mem=7.5% | Pods=14
+  - scheduler-demo-worker4: Score=0.5709 | CPU=15.7% | Mem=7.3% | Pods=14
+
+--- Local Agent Insight ---
+The FL agent on 'scheduler-demo-worker3' contributed local weights (w_cpu=0.32, w_mem=0.18) which influenced this decision. This distributed approach adapts dynamically per-node.

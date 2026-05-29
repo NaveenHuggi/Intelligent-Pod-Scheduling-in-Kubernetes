@@ -1,0 +1,26 @@
+---
+# Namespace for the intelligent scheduler
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: scheduler-system
+  labels:
+    app.kubernetes.io/name: intelligent-scheduler
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: default-workloads
+  labels:
+    purpose: workload-testing
+    scheduler: default
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: intelligent-workloads
+  labels:
+    purpose: workload-testing
+    scheduler: intelligent

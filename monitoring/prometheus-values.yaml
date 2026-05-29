@@ -1,0 +1,44 @@
+# Prometheus Helm values for the scheduler-demo project
+# Minimal footprint suitable for a kind cluster
+
+server:
+  persistentVolume:
+    enabled: false
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  # Scrape interval
+  global:
+    scrape_interval: 15s
+    evaluation_interval: 15s
+
+# Extra scrape configs to pick up the intelligent scheduler metrics
+extraScrapeConfigs: |
+  - job_name: 'intelligent-scheduler'
+    static_configs:
+      - targets: ['intelligent-scheduler.scheduler-system.svc:8080']
+    metrics_path: /metrics
+
+alertmanager:
+  enabled: false
+
+pushgateway:
+  enabled: false
+
+nodeExporter:
+  enabled: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 32Mi
+
+kube-state-metrics:
+  enabled: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi

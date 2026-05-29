@@ -1,0 +1,31 @@
+
+
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║        SCHEDULER BENCHMARK RESULTS — 2026-05-27 09:12:48                        ║
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  Test pods per scheduler : 20
+║  Namespaces              : default-workloads / intelligent-workloads
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  METRIC                  DEFAULT         INTELLIGENT
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  Total schedule time (s) : 3              59
+║  Avg latency per pod (s) : 0.350              47.556
+║  Load balance (std dev)  : 0.0000  (mean=10.0, nodes=2)
+║                          : vs 3.0000  (mean=10.0, nodes=2)
+║  Control-Plane Placements: 0
+0               0
+0  <-- Should be 0 for Intelligent!
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  POD DISTRIBUTION — DEFAULT SCHEDULER
+║    10 pods → scheduler-demo-worker2
+║    10 pods → scheduler-demo-worker
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  POD DISTRIBUTION — INTELLIGENT SCHEDULER
+║    13 pods → scheduler-demo-worker
+║    7 pods → scheduler-demo-worker2
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║  PHASE 5: IMPROVEMENT ANALYSIS
+║
+║  Sample Groq LLM RCA for pod 'test-app-intelligent-664c964d97-22g2x':
+║  "[FL-RCA] Pod 'test-app-intelligent-664c964d97-22g2x' → Node 'scheduler-demo-worker2' (score: 0.5956). Global FL Model (FedAvg of distributed agents): w_cpu=0.44, w_mem=0.16, w_pods=0.10, w_hist=0.30. Node state: CPU=34.5%, Mem=20.0%, Pods=39. Dominant factor: 'CPU Headroom'. Local Agent on 'scheduler-demo-worker2' contributed weights: w_cpu=0.44, w_mem=0.16. This distributed FL approach adapts per-node, unlike the static default scheduler."
+╚══════════════════════════════════════════════════════════════════════════════════╝

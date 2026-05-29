@@ -1,0 +1,25 @@
+# kind cluster config for the Intelligent Pod Scheduling project
+# Separate cluster from capstone — named "scheduler-demo"
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: scheduler-demo
+nodes:
+  - role: control-plane
+    kubeadmConfigPatches:
+      - |
+        kind: InitConfiguration
+        nodeRegistration:
+          kubeletExtraArgs:
+            node-labels: "ingress-ready=true"
+  - role: worker
+    labels:
+      node-role: worker
+  - role: worker
+    labels:
+      node-role: worker
+  - role: worker
+    labels:
+      node-role: worker
+  - role: worker
+    labels:
+      node-role: worker

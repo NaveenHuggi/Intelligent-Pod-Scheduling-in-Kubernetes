@@ -1,0 +1,5 @@
+timestamp,node,cpu_pct,mem_pct,cpu_cores_used,mem_used,pod_count,pods_default_ns,pods_intelligent_ns,fl_w_cpu,fl_w_mem,fl_w_pods,fl_w_hist,fl_rounds,global_w_cpu,global_w_mem,global_w_pods,global_w_hist,suitability_score,recommendation
+2026-05-27 10:14:37,scheduler-demo-worker,5.9,9.62,797m,619Mi,18,5,7,0.25,0.15,0.1,0.4999,83,0.25,0.15,0.1,0.4999,0.876,GOOD
+2026-05-27 10:14:37,scheduler-demo-worker2,4.33,7.41,183m,514Mi,14,5,3,0.25,0.15,0.1,0.4999,84,0.25,0.15,0.1,0.4999,0.9043,BEST
+2026-05-27 10:14:37,scheduler-demo-worker3,5.53,9.78,222m,673Mi,16,5,6,0.25,0.15,0.1,0.4999,81,0.25,0.15,0.1,0.4999,0.8872,GOOD
+2026-05-27 10:14:37,scheduler-demo-worker4,5.9,7.5,236m,516Mi,15,5,4,0.25,0.15,0.1,0.4999,84,0.25,0.15,0.1,0.4999,0.895,GOOD
